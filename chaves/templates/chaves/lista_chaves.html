@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main %}
+    <h1>Chaves</h1>
+
+    <div class="ui placeholder segment">
+        <div class="ui horizontal segments">
+            <div class="ui segment">
+                {% if pendentes %}
+                    <h2>Pendente</h2>
+                    <form method="POST" action="{% url 'lista_chaves' %}">
+                        {% csrf_token %}
+                        <h3>Chave:{{ pendentes.0 }}</h3>
+                        <input type="hidden" name="pendente" value="{{ pendentes.0.id }}">
+                        {% if status %}
+                            <button type="submit" name="copiar_nf" class="ui green button">
+                                Copiar NF
+                            </button>
+                        {% else %}
+                             <button type="submit" name="copiar_chave" value="copiar_chave" class="ui secondary button">
+                                Copiar Chave
+                            </button>
+                        {% endif %}
+                    </form>
+                {% else %}
+                    <h3>Não há mais chaves pendentes!</h3>
+                {% endif %}
+            </div>
+            <div class="ui segment">
+                <h2>Pendentes:{{ pendentes|length }}</h2>
+                <h2>Arquivadas:{{ arquivadas }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <table class="ui celled table">
+        <h3>Próximas chaves</h3>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Código</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for chave in pendentes %}
+                {% if  chave != pendentes.0 %}
+                <tr>
+                    <td data-label="Name">{{ chave.id }}</td>
+                    <td data-label="Age">{{ chave.codigo }}</td>
+                    <td data-label="Job">{{ chave.arquivado }}</td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
